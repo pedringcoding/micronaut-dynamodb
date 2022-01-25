@@ -35,6 +35,12 @@ gradlew build
 gradlew run
 ```
 
+## Handler
+
+[AWS Lambda Handler](https://docs.aws.amazon.com/lambda/latest/dg/java-handler.html)
+
+Handler: es.pedcod.BookRequestHandler
+
 ## :octocat: Can you support me?
 
 I will continue to do things and expose notes, but existing many ways to support what I do:
