@@ -1,0 +1,28 @@
+// Apply to execute keep code
+apply plugin: 'com.diffplug.spotless'
+
+// -=- TEST - CODIFICATION RULES -=-
+// goal: gradle spotlessApply || gradle compileJava
+spotless {
+	encoding 'UTF-8' // all formats will be interpreted as UTF-8
+	format 'misc', {
+		// define the files to apply `misc` to
+		target '*.gradle', '*.md', '.gitignore'
+
+		// define the steps to apply to those files
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		target 'src/*/java/**/*.java'
+
+		importOrder()
+		removeUnusedImports()
+
+		// https://github.com/google/google-java-format/releases
+		googleJavaFormat('1.8').aosp().reflowLongStrings()
+	}
+}
+// to delimiter execution at needed pre-step
+compileJava.dependsOn 'spotlessApply'
