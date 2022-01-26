@@ -2,6 +2,7 @@ plugins {
     id("io.micronaut.library") version "3.0.0"
     id("com.github.johnrengelman.shadow") version "7.1.0"
     id("com.diffplug.spotless") version "5.17.1" apply false
+	id("org.barfuin.gradle.jacocolog") version "2.0.0" apply false
 }
 
 version = "0.1"
@@ -9,6 +10,8 @@ group = "es.pedcod"
 
 // repositories allowed to management dependencies
 apply from: "$rootDir/gradle/repositories.gradle"
+// Add support to testing steps
+apply from: "$rootDir/gradle/testing.gradle"
 // Add support to codification rules checked
 apply from: "$rootDir/gradle/codification-rules.gradle"
 
@@ -28,14 +31,11 @@ dependencies {
     implementation("io.micronaut.aws:micronaut-function-aws")
 
     runtimeOnly("ch.qos.logback:logback-classic")
-
-    testImplementation("io.micronaut:micronaut-http-client")
 }
-
 
 java {
     sourceCompatibility = JavaVersion.toVersion("11")
-    targetCompatibility = JavaVersion.toVersion("11")
+	targetCompatibility = JavaVersion.toVersion("11")
 }
 
 tasks.named("assemble") {
