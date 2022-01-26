@@ -1,0 +1,62 @@
+// Aggregates Jacoco test coverage print console
+apply plugin: 'org.barfuin.gradle.jacocolog'
+// Aggregates Jacoco test reports
+apply plugin: 'jacoco'
+
+dependencies {
+	testImplementation "io.micronaut:micronaut-http-client"
+}
+
+test {
+    useJUnitPlatform()
+	scanForTestClasses = false
+	// support JUnit platform for parallel executions
+	maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+	// Show that tests are run in the command-line output
+	testLogging {
+        events "skipped", "failed"
+    }
+    afterSuite { desc, result ->
+    	if (!desc.parent) { // will match the outermost suite
+        	def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+           	def startItem = '|  ', endItem = '  |'
+           	def repeatLength = startItem.length() + output.length() + endItem.length()
+           	println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+       	}
+   	}
+}
+
+// -=- CHECK COVERAGE -=-
+// goal: gradle check
+jacoco {
+	toolVersion = "0.8.7"
+	reportsDirectory = file("${project.reporting.baseDir}/coverage")
+}
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+		csv.required = false
+	}
+}
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.8
+			}
+		}
+	}
+}
+jacocoLogTestCoverage {
+	dependsOn jacocoTestReport // tests are required to run before generating the report
+	enabled = true
+}
+// A run coverage verification during the build (and fail when appropriate)
+check.finalizedBy jacocoTestCoverageVerification
+check.finalizedBy jacocoTestReport
+check.finalizedBy jacocoLogTestCoverage
+// to delimiter execution at needed pre-step
+jacocoTestCoverageVerification.dependsOn test
+jacocoTestReport.dependsOn test
