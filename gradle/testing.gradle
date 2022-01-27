@@ -5,6 +5,8 @@ apply plugin: 'jacoco'
 
 dependencies {
 	testImplementation "io.micronaut:micronaut-http-client"
+	testImplementation "org.apache.commons:commons-lang3:$commonsLang3Version"
+	testImplementation "org.assertj:assertj-core:$assertJCoreVersion"
 }
 
 test {
